@@ -78,7 +78,7 @@ def OpenAllDesiredTerminals():
     # geometry is widthxheight+x+y   50x10+1935+20
     # subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x10+1935+20", "--working-directory=sam"])
     title = "roslaunch rover_desc_pkg move_base_controller.launch"
-    subprocess.call(["xdotool", "exec", "gnome-terminal -/home/allan/.bashrc", "--geometry=100x10+1935+20",
+    subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x10+1935+20",
                      "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"])
     time.sleep(2)
 
