@@ -54,6 +54,10 @@ def sendKeystrokesToWindow(windowID, keystrokes):
     subprocess.call(["xdotool", "type", keystrokes])
 
 
+def testterminal():
+    subprocess.call("./.ssleep.sh", shell=True)
+
+
 def ReturnActiveTerminal():
     # click on a terminal to activate it (activating sam terminal at 705,37)
     # subprocess.call(["xdotool", "mousemove", "705", "37", "click", "1"])
@@ -118,6 +122,12 @@ button3 = tk.Button(text='  ls in Terminal Window 1  ', command=sendKeystrokesTo
 
 button4 = tk.Button(text=' step 1: roslaunch_move_base_controller  ', command=roslaunch_move_base_controller, bg='green', fg='white',
                     font=('helvetica', 12, 'bold'))
+
+button5 = tk.Button(text=' testterminal  ', command=testterminal, bg='green', fg='white',
+                    font=('helvetica', 12, 'bold'))
+
+
+canvas1.create_window(250, 50, window=button5)
 
 canvas1.create_window(250, 100, window=button1)
 canvas1.create_window(250, 140, window=button2)
