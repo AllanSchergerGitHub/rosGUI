@@ -1,6 +1,10 @@
-# rosGUI
+# ROS_GUI
 
 Put this code within your ROS directory or it may not work properly.
+
+# How to start this code
+
+from command line `python ROS_GUI.py` and press the enter key.
 
 #There are 3 manual entries that need to be added (title, working_directory, and command):
 
