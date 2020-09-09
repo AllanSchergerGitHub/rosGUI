@@ -1,4 +1,5 @@
 # this is the best working example as of Sept 9 2020 - allanscherger@hotmail.com
+# http://wiki.ros.org/roslaunch/API%20Usage
 
 #! /usr/bin/python
 # inspired by http://www.linuxjournal.com/article/8005?page=0,2
