@@ -2,11 +2,13 @@
 
 Put this code within your ROS directory or it may not work properly.
 
-# How to start this code
+## How to start this code
 
 from command line `python ROS_GUI.py` and press the enter key.
 
-# There are 3 manual entries that need to be added for each launch file you wish to control (title, working_directory, and command):
+note: the other files in this directory are non-working drafts of different approaches and ideas.
+
+## There are 3 manual entries that need to be added for each launch file you wish to control (title, working_directory, and command):
 
 example:
 
