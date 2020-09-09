@@ -6,7 +6,7 @@ Put this code within your ROS directory or it may not work properly.
 
 from command line `python ROS_GUI.py` and press the enter key.
 
-# There are 3 manual entries that need to be added (title, working_directory, and command):
+# There are 3 manual entries that need to be added for each launch file you wish to control (title, working_directory, and command):
 
 example:
 
