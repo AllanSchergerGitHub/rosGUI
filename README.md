@@ -2,6 +2,8 @@
 
 Put this code within your ROS directory or it may not work properly.
 
+This GUI will work with any and all types of terminal commands; it is not limited to just working with ROS.
+
 ## How to start this code
 
 from command line `python ROS_GUI.py` and press the enter key.
