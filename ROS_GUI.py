@@ -100,8 +100,35 @@ def command4_method():
     # subprocess.check_output(["xdotool", "type", command3[1] + "\n"])
 
 
-def close_window(windowID):
-    print("stub")
+def close_window1():
+    global windowid1
+    windowID = windowid1
+    # subprocess.call(["xdotool", "windowfocus", windowID])
+    # subprocess.check_output(["xdotool", "alt+F4", windowID])
+    print("windowID", windowID)
+    try:
+        subprocess.check_output(["xdotool", "windowclose", windowID])
+        # subprocess.check_output(["xdotool", "windowclose", windowID], shell=True, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+
+
+def close_window2():
+    global windowid2
+    windowID = windowid2
+    # subprocess.call(["xdotool", "windowfocus", windowID])
+    # subprocess.check_output(["xdotool", "alt+F4", windowID])
+    print("windowID", windowID)
+    try:
+        subprocess.check_output(["xdotool", "windowclose", windowID])
+        # subprocess.check_output(["xdotool", "windowclose", windowID], shell=True, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+
+
+def close_all_windows():
+    close_window1()
+    close_window2()
 
 
 def OpenAllDesiredTerminals():
@@ -119,7 +146,7 @@ def OpenAllDesiredTerminals():
     # xwininfo -int will give info about the window but it requires you to mouse click on the desired window first.
     # xprop within a terminal will give a lot of info about that window.
     windowid1 = subprocess.check_output(["xdotool", "getactivewindow"])
-    print("windowid1", windowid1.decode())
+    print("windowid1", windowid1.decode(), windowid1)
 
     subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x20+550+500",
                      working_directory2])
@@ -146,6 +173,15 @@ button3 = tk.Button(text=' Catkin Clean: ' + title3, command=command3_method, bg
 button4 = tk.Button(text=' Catkin_Make: ' + title4, command=command4_method, bg='green', fg='white',
                     font=('helvetica', 11, 'bold'))
 
+button5 = tk.Button(text=' Close_window #1 and Exit Program', command=close_window1, bg='green', fg='white',
+                    font=('helvetica', 11, 'bold'))
+
+button6 = tk.Button(text=' Close_window #2 and Exit Program', command=close_window2, bg='green', fg='white',
+                    font=('helvetica', 11, 'bold'))
+
+button7 = tk.Button(text=' Close all windows - Exit All Programs', command=close_all_windows, bg='green', fg='white',
+                    font=('helvetica', 11, 'bold'))
+
 # print("len1", len(title1))
 # print("len2", len(title2))
 
@@ -166,5 +202,12 @@ buttonx = buttonx_orig
 canvas2.create_window(200, buttonx, window=button3)
 buttonx = buttonx + buttongap
 canvas2.create_window(200, buttonx, window=button4)
+
+buttonx = buttonx + buttongap + 30
+canvas2.create_window(200, buttonx, window=button5)
+buttonx = buttonx + buttongap
+canvas2.create_window(200, buttonx, window=button6)
+buttonx = buttonx + buttongap
+canvas2.create_window(200, buttonx, window=button7)
 
 root.mainloop()
