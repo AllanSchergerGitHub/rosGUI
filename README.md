@@ -2,6 +2,14 @@
 
 Put this code within your ROS directory or it may not work properly.
 
+This GUI will work with any and all types of terminal commands; it is not limited to just working with ROS.
+
+## Installation / setup
+
+### install xdotool on your ubuntu 18.04 machine first with this command:
+`sudo apt-get install xdotool`
+
+
 ## How to start this code
 
 from command line `python ROS_GUI.py` and press the enter key.
