@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# this is the best working example as of Sept 9 2020 - allanscherger@hotmail.com
+# this is the best working example as of Sept 13 2020 - allanscherger@hotmail.com
 
 # alternative approach:
 # http://wiki.ros.org/roslaunch/API%20Usage
@@ -18,196 +18,165 @@
 
 import subprocess
 import time
-import tkinter as tk
-
-root = tk.Tk()
-root.title('ROS GUI')
-
-canvas1 = tk.Canvas(root, width=600, height=500, bg='gray90', relief='raised')
-canvas1.pack(side='left')
-
-canvas2 = tk.Canvas(root, width=400, height=500, bg='gray90', relief='raised')
-canvas2.pack(side='right')
-
-windowid1 = ''
-windowid2 = ''
-
-title1 = "roslaunch rover_desc_pkg move_base_controller.launch"  # title shows on the button - it can be any helpful text
-working_directory1 = "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"
-command1 = "roslaunch rover_desc_pkg move_base_controller.launch"  # package and launch_file_name
-
-title2 = "roslaunch rover_gazebo_control start_navsat.launch"  # title shows on the button - it can be any helpful text
-working_directory2 = "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"
-command2 = "roslaunch rover_gazebo_control start_navsat.launch"  # package and launch_file_name
-
-title3 = "Catkin Clean"  # title shows on the button - it can be any helpful text
-directory3 = "/rover_ros_yuthika_vio/RoverYuthika"
-command3 = ["catkin clean", "placeholder"]
-
-title4 = "Catkin_Make"  # title shows on the button - it can be any helpful text
-directory4 = "/rover_ros_yuthika_vio/RoverYuthika"
-command4 = ["catkin_make", "placeholder"]
+from tkinter import *
 
 
-def command1_method():
-    global windowid1
-    global command1
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
-    time.sleep(1)
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", command1 + "\n"])
+class MainApplication(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.master = master
+        self.init_window()
+
+        self.window_id1 = ''
+        self.window_id2 = ''
+        self.window_id3 = ''
+
+        self.directory = "/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+
+        self.working_directory1 = "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+        self.directory1 = self.directory  # this may need to be hard coded depending on the usage
+        self.command1 = "roslaunch rover_desc_pkg move_base_controller.launch"  # package and launch_file_name
+
+        self.working_directory2 = "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+        self.directory2 = self.directory  # this may need to be hard coded depending on the usage
+        self.command2 = "roslaunch rover_gazebo_control start_navsat.launch"  # package and launch_file_name
+
+        self.working_directory3 = "--working-directory=/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+        self.directory3 = self.directory  # this may need to be hard coded depending on the usage
+        self.command3 = "roslaunch rover_gazebo_control gps_waypoint_nav.launch"  # package and launch_file_name
+
+        self.directory4 = "/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+        self.command4 = ["catkin clean", "placeholder"]
+
+        self.directory5 = "/home/allan/rover_ros_yuthika_vio/RoverYuthika"
+        self.command5 = ["catkin_make", "placeholder"]
+
+    def init_window(self):
+        self.master.title("ROS GUI")
+
+        # title shows on the button - it can be any helpful text
+        title1 = "roslaunch rover_desc_pkg move_base_controller.launch"
+        title2 = "roslaunch rover_gazebo_control start_navsat.launch"
+        title3 = "roslaunch rover_gazebo_control gps_waypoint_nav.launch"
+
+        title4 = "Catkin Clean"
+        title5 = "Catkin_Make"
+
+        button_a = Button(text=' Step 1: Open Terminal Windows', command=self.callback_open_all_terminals,
+                          bg='green', fg='white', font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button_a.grid(row=1, column=1, sticky='news')
+
+        button1 = Button(text=' Step 2: ' + title1,
+                         command=lambda: self.command_method(self.window_id1, self.directory1, self.command1),
+                         bg='green', fg='white', font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button1.grid(row=4, column=1, sticky='news')
+
+        button2 = Button(text=' Step 3: ' + title2,
+                         command=lambda: self.command_method(self.window_id2, self.directory2, self.command2),
+                         bg='green', fg='white', font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button2.grid(row=5, column=1, sticky='news')
+
+        button2_1 = Button(text='Follow GPS Path: ' + title3,
+                           command=lambda: self.command_method(self.window_id3, self.directory3, self.command3),
+                           bg='green', fg='white', font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button2_1.grid(row=6, column=1, sticky='news')
+
+        button3 = Button(text=' Catkin Clean: ' + title4, command=self.command4_method, bg='green', fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button3.grid(row=1, column=3, sticky='news')
+
+        button4 = Button(text=' Catkin_Make: ' + title5, command=self.command5_method, bg='green', fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button4.grid(row=2, column=3, sticky='news')
+
+        button5 = Button(text=' close_window #1 and Exit Program', command=lambda: self.close_terminal(self.window_id1),
+                         bg='green', fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button5.grid(row=4, column=3, sticky='news')
+
+        button6 = Button(text=' close_window #2 and Exit Program', command=lambda: self.close_terminal(self.window_id2),
+                         bg='green', fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button6.grid(row=5, column=3, sticky='news')
+
+        button7 = Button(text=' close_window #3 and Exit Program', command=lambda: self.close_terminal(self.window_id3),
+                         bg='green', fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button7.grid(row=6, column=3, sticky='news')
+
+        button8 = Button(text=' close all windows - Exit All Programs', command=self.close_all_terminals, bg='green',
+                         fg='white',
+                         font=('helvetica', 11, 'bold'), padx=5, pady=5)
+        button8.grid(row=7, column=3, sticky='news')
+
+    def command_method(self, window_id, directory, command):
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", "cd " + directory + "\n"])
+        subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
+        time.sleep(1)
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", command + "\n"])
+
+    def command4_method(self):
+        window_id = self.window_id1
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", "cd " + self.directory4 + "\n"])
+        subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
+        time.sleep(1)
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", self.command4[0] + "\n"])
+
+    def command5_method(self):
+        window_id = self.window_id1
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", "cd " + self.directory5 + "\n"])
+        time.sleep(1)
+        subprocess.call(["xdotool", "windowfocus", window_id])
+        subprocess.check_output(["xdotool", "type", self.command5[0] + "\n"])
+
+    def close_terminal(self, window_id):
+        try:
+            subprocess.check_output(["xdotool", "windowclose", window_id])
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+
+    def close_all_terminals(self):
+        self.close_terminal(self.window_id1)
+        self.close_terminal(self.window_id2)
+        self.close_terminal(self.window_id3)
+
+    def openterminal(self, working_directory, pos_x, pos_y):
+        subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x20+450+20",
+                         working_directory])
+        time.sleep(0.75)
+        # assumes focus stays on window that was just created
+        # can also run `xdotool getactivewindow` from command line to get the window id.
+        # xwininfo -int will give info about the window but it requires you to mouse click on the desired window first.
+        # xprop within a terminal will give a lot of info about that window.
+        window_id = subprocess.check_output(["xdotool", "getactivewindow"])
+        subprocess.check_output(["xdotool", "windowmove", window_id, str(pos_x), str(pos_y)])
+        print("window_id", window_id.decode(), window_id)
+        return window_id
+
+    def open_all_desired_terminals(self):
+        # create terminals
+        # last two numbers are the x,y position for terminal. x from left edge of screen, y down from top of screen
+        self.window_id1 = self.openterminal(self.working_directory1, 0, 10)
+        self.window_id2 = self.openterminal(self.working_directory2, 350, 325)
+        self.window_id3 = self.openterminal(self.working_directory3, 700, 650)
+
+    def callback_open_all_terminals(self):
+        self.open_all_desired_terminals()
 
 
-def command2_method():
-    global windowid2
-    global command2
-    subprocess.call(["xdotool", "windowfocus", windowid2])
-    subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
-    time.sleep(1)
-    subprocess.call(["xdotool", "windowfocus", windowid2])
-    subprocess.check_output(["xdotool", "type", command2 + "\n"])
-
-    # time.sleep(1)
-    # this code is an attempt at closing the terminal but it doesn't work
-    # subprocess.call(["xdotool", "windowactivate", windowid2])
-    # subprocess.check_output(["xdotool",  "alt+f4" + "\n"])
+def main():
+    root = Tk()
+    root.grid_columnconfigure(2, minsize=25)
+    root.grid_rowconfigure(2, minsize=15)
+    root.grid_rowconfigure(3, minsize=15)
+    app = MainApplication(root)
+    root.mainloop()
 
 
-def command3_method():
-    global windowid1
-    global command3
-    global directory3
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", "cd ~"+directory3+"\n"])
-    subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
-    time.sleep(1)
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", command3[0] + "\n"])
-    # subprocess.check_output(["xdotool", "type", command3[1] + "\n"])
-
-
-def command4_method():
-    global windowid1
-    global command4
-    global directory4
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", "cd ~"+directory3+"\n"])
-    # subprocess.check_output(["xdotool", "type", ". devel/setup.sh\n"])
-    time.sleep(1)
-    subprocess.call(["xdotool", "windowfocus", windowid1])
-    subprocess.check_output(["xdotool", "type", command4[0] + "\n"])
-    # subprocess.check_output(["xdotool", "type", command3[1] + "\n"])
-
-
-def close_window1():
-    global windowid1
-    windowID = windowid1
-    # subprocess.call(["xdotool", "windowfocus", windowID])
-    # subprocess.check_output(["xdotool", "alt+F4", windowID])
-    print("windowID", windowID)
-    try:
-        subprocess.check_output(["xdotool", "windowclose", windowID])
-        # subprocess.check_output(["xdotool", "windowclose", windowID], shell=True, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
-
-
-def close_window2():
-    global windowid2
-    windowID = windowid2
-    # subprocess.call(["xdotool", "windowfocus", windowID])
-    # subprocess.check_output(["xdotool", "alt+F4", windowID])
-    print("windowID", windowID)
-    try:
-        subprocess.check_output(["xdotool", "windowclose", windowID])
-        # subprocess.check_output(["xdotool", "windowclose", windowID], shell=True, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
-
-
-def close_all_windows():
-    close_window1()
-    close_window2()
-
-
-def OpenAllDesiredTerminals():
-    # create terminals
-    global windowid1
-    global windowid2
-    global working_directory1
-    global working_directory2
-
-    subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x20+450+20",
-                     working_directory1])
-    time.sleep(2)
-    # assumes focus stays on window that was just created
-    # can also run `xdotool getactivewindow` from command line to get the window id.
-    # xwininfo -int will give info about the window but it requires you to mouse click on the desired window first.
-    # xprop within a terminal will give a lot of info about that window.
-    windowid1 = subprocess.check_output(["xdotool", "getactivewindow"])
-    print("windowid1", windowid1.decode(), windowid1)
-
-    subprocess.call(["xdotool", "exec", "gnome-terminal", "--geometry=100x20+550+500",
-                     working_directory2])
-    time.sleep(2)
-    # assumes focus stays on window that was just created
-    # can also run `xdotool getactivewindow` from command line to get the window id.
-    # xwininfo -int will give info about the window but it requires you to mouse click on the desired window first.
-    windowid2 = subprocess.check_output(["xdotool", "getactivewindow"])
-    print("windowid2", windowid2.decode())
-
-
-buttonA = tk.Button(text=' Step 1: Open Terminal Windows', command=OpenAllDesiredTerminals, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button1 = tk.Button(text=' Step 2: ' + title1, command=command1_method, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button2 = tk.Button(text=' Step 3: ' + title2, command=command2_method, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button3 = tk.Button(text=' Catkin Clean: ' + title3, command=command3_method, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button4 = tk.Button(text=' Catkin_Make: ' + title4, command=command4_method, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button5 = tk.Button(text=' Close_window #1 and Exit Program', command=close_window1, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button6 = tk.Button(text=' Close_window #2 and Exit Program', command=close_window2, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-button7 = tk.Button(text=' Close all windows - Exit All Programs', command=close_all_windows, bg='green', fg='white',
-                    font=('helvetica', 11, 'bold'))
-
-# print("len1", len(title1))
-# print("len2", len(title2))
-
-buttonx_orig = 80
-buttongap = 40
-
-canvas1.create_window(151, buttonx_orig, window=buttonA)
-# canvas1.create_window(350-len(command2), 130, window=button1)
-# canvas1.create_window(350-len(command1)-15, 180, window=button2)
-
-buttonx = buttonx_orig + buttongap
-canvas1.create_window(213+len(title1), buttonx, window=button1)
-buttonx = buttonx + buttongap
-canvas1.create_window(200+len(title2), buttonx, window=button2)
-buttonx = buttonx + buttongap
-
-buttonx = buttonx_orig
-canvas2.create_window(200, buttonx, window=button3)
-buttonx = buttonx + buttongap
-canvas2.create_window(200, buttonx, window=button4)
-
-buttonx = buttonx + buttongap + 30
-canvas2.create_window(200, buttonx, window=button5)
-buttonx = buttonx + buttongap
-canvas2.create_window(200, buttonx, window=button6)
-buttonx = buttonx + buttongap
-canvas2.create_window(200, buttonx, window=button7)
-
-root.mainloop()
+if __name__ == '__main__':
+    main()
